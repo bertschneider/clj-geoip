@@ -1,0 +1,6 @@
+(defproject clj-geoip "0.1.0"
+  :description "Thin Clojure layer on top of the Java GeoIP API.
+Please have a look at the GeoIP homepage at http://www.maxmind.com/app/ip-location."
+  :java-source-path "java"
+  :dependencies [[org.clojure/clojure "1.3.0"]]
+  :dev-dependencies [[lein-marginalia "0.7.0"]])
