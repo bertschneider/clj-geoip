@@ -19,6 +19,11 @@ the `resources` folder.
 files on a monthly basis. So it's a good idea to run the script every
 now and then.
 
+Furthermore you have to compile the MaxMind Java classes first. Just
+run the Leiningen javac command to do so.
+
+    > lein javac
+
 ## Usage
 
 This API is pretty simple, just have a look at the following code:
@@ -54,8 +59,8 @@ possible to bind the locations in the `clj-geoip.core/*dbs*` symbol to a new val
 
 ## TODO
 
+- [X] Pass through of `LookupService` modes.
 - Is the `geoip-close` method really necessary? 
-- Pass through of `LookupService` modes.
 - Add IPv6 functions.
 - Add function to calculate the distance between two IPs.
 - Ring handler to inject location information into the request map.
