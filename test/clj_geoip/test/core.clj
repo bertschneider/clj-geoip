@@ -13,4 +13,5 @@
     (is (= "AS15169 Google Inc." (:asn location))))
   (is (true? (geoip-close)))
   (is (false? (initialized?)))
-  (is (thrown? IllegalStateException (lookup "IP"))))
+  (is (thrown? IllegalStateException (lookup "IP")))
+  (is (true? (geoip-init :memory))))

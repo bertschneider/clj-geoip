@@ -18,12 +18,29 @@ lookup information about the given IP."
 (def ^{:private true} geoip-city (ref nil))
 (def ^{:private true} geoip-asn (ref nil))
 
+(defn- geoip-mode
+  "Looks up the matching mode to the given keyword."
+  [mode]
+  (case mode
+      :memory 1
+      :check 2
+      :index 4
+      0))
+
+(defn- geoip-init-db
+  "Initializes a new LookupService with the given file and mode."
+  [db mode]
+  (if mode
+    (LookupService. db (geoip-mode mode))
+    (LookupService. db)))
+
 (defn geoip-init
-  "Initializes the GeoIP service."
-  []
+  "Initializes the GeoIP service.
+The modes `:memory`, `:check` or `:index` are possible."
+  [& [mode]]
   (dosync
-   (let [city (LookupService. (:city *dbs*))
-         asn (LookupService. (:asn *dbs*))]
+   (let [city (geoip-init-db (:city *dbs*) mode)
+         asn (geoip-init-db (:asn *dbs*) mode)]
      (ref-set geoip-city city)
      (ref-set geoip-asn asn)
      true)))
