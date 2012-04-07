@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Clj-geoip by Norrit</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/Norrit/clj-geoip">Fork On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/Norrit/clj-geoip/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/Norrit/clj-geoip/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Clj-geoip</h1>
+          <p>Clojure GeoIP</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/Norrit">Norrit</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>clj-geoip</h1>
+
+<p><code>clj-geoip</code> is a thin <a href="http://www.clojure.com">Clojure</a> layer on top
+of the <a href="http://www.maxmind.com/">MaxMind GeoIP Java API</a>. It allows
+you to query information like the country, city or network provider of
+a given IP. Have a look at the usage section for an example.</p>
+
+<p>"This product includes GeoLite data created by MaxMind, available from <a href="http://www.maxmind.com/">http://www.maxmind.com/</a>."</p>
+
+<h2>Preparation</h2>
+
+<p>To use <code>clj-geoip</code> you first need to download the newest version of
+the free GeoIP data files. To do so you can use the download script
+<code>UpdateGeoIpFiles.sh</code> provided in the <code>scripts</code> folder. 
+It simply downloads the newest archives and extracts them into
+the <code>resources</code> folder.</p>
+
+<p><a href="http://www.maxmind.com/">MaxMind</a> provides new versions of the data
+files on a monthly basis. So it's a good idea to run the script every
+now and then.</p>
+
+<p>Furthermore you have to compile the MaxMind Java classes first. Just
+run the Leiningen javac command to do so.</p>
+
+<pre><code>&gt; lein javac
+</code></pre>
+
+<h2>Usage</h2>
+
+<p>This API is pretty simple, just have a look at the following code:</p>
+
+<pre><code>user&gt; (use 'clj-geoip.core)
+nil
+user&gt; (geoip-init)
+true
+user&gt; (use 'clojure.pprint)
+nil
+user&gt; (pprint (lookup "87.152.91.74"))
+{:countryName "Germany",
+ :area-code 0,
+ :asn "AS3320 Deutsche Telekom AG",
+ :longitude 7.399994,
+ :postalCode nil,
+ :latitude 50.983307,
+ :city "Engelskirchen",
+ :metro-code 0,
+ :region "07",
+ :countryCode "DE",
+ :dma-code 0,
+ :ip "87.152.91.74"}
+nil
+user&gt; (geoip-close)
+true
+</code></pre>
+
+<p>Use <code>geoip-init</code> and <code>geoip-close</code> to start and stop the service and <code>lookup</code> to
+lookup information about the given IP.</p>
+
+<p>The data files are expected to be in the <code>resources</code> folder but it's
+possible to bind the locations in the <code>clj-geoip.core/*dbs*</code> symbol to a new value.</p>
+
+<h2>Ring Handler</h2>
+
+<p>You can use the provided ring handler to add location information to
+the request map. Here is a Noir example:</p>
+
+<pre><code>(use 'clj-geoip.handler)
+(add-middleware #'geoip-handler)
+(defpage "/" []
+    (str (:location (ring-request))))
+;; -&gt; {:countryName "United States", :area-code 650, :longitude -122.0574, :postalCode "94043", :latitude 37.419205, :city "Mountain View", :metro-code 807, :region "CA", :countryCode "US", :dma-code 807, :asn "AS15169 Google Inc.", :ip "209.85.148.100"}
+</code></pre>
+
+<h2>TODO</h2>
+
+<ul>
+<li>[X] Pass through of <code>LookupService</code> modes.</li>
+<li>[X] Ring handler to inject location information into the request map.</li>
+<li>Is the <code>geoip-close</code> method really necessary? </li>
+<li>Add IPv6 functions.</li>
+<li>Add function to calculate the distance between two IPs.</li>
+<li>Noir test application on Heroku. </li>
+</ul><h2>License</h2>
+
+<p>Copyright (C) 2012</p>
+
+<p>Distributed under the Eclipse Public License, the same as Clojure.</p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+  </body>
+</html>
