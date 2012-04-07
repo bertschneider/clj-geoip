@@ -11,7 +11,7 @@ lookup information about the given IP."
        :doc "Location of the GeoIP DB files."}
   *dbs*
   {:city "resources/GeoLiteCity.dat"
-   :asn "resources/GeoIPASNum.dat"})
+   :asn  "resources/GeoIPASNum.dat"})
 
 ;; Refs to hold the two GeoIP DB files.
 ;; They should be private so no one messes around with them.
@@ -23,8 +23,8 @@ lookup information about the given IP."
   [mode]
   (case mode
       :memory 1
-      :check 2
-      :index 4
+      :check  2
+      :index  4
       0))
 
 (defn- geoip-init-db
@@ -103,6 +103,7 @@ The modes `:memory`, `:check` or `:index` are possible."
 (defn lookup
   "Looks up all available IP information."
   [ip]
-  (if-let [geoinfo (merge (lookup-location ip) (lookup-asn ip))]
+  (if-let [geoinfo (merge (lookup-location ip)
+                          (lookup-asn ip))]
     geoinfo
     {:error "IP not localized"}))
