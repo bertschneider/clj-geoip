@@ -57,13 +57,24 @@ lookup information about the given IP.
 The data files are expected to be in the `resources` folder but it's
 possible to bind the locations in the `clj-geoip.core/*dbs*` symbol to a new value.
 
+## Ring Handler
+
+You can use the provided ring handler to add location information to
+the request map. Here is a Noir example:
+    
+    (use 'clj-geoip.handler)
+    (add-middleware #'geoip-handler)
+    (defpage "/" []
+        (str (:location (ring-request))))
+    ;; -> {:countryName "United States", :area-code 650, :longitude -122.0574, :postalCode "94043", :latitude 37.419205, :city "Mountain View", :metro-code 807, :region "CA", :countryCode "US", :dma-code 807, :asn "AS15169 Google Inc.", :ip "209.85.148.100"}
+    
 ## TODO
 
 - [X] Pass through of `LookupService` modes.
+- [X] Ring handler to inject location information into the request map.
 - Is the `geoip-close` method really necessary? 
 - Add IPv6 functions.
 - Add function to calculate the distance between two IPs.
-- Ring handler to inject location information into the request map.
 - Noir test application on Heroku. 
 
 ## License

@@ -9,3 +9,4 @@
 *.dat
 *.dat.gz
 /target
+/.lein-plugins/checksum
