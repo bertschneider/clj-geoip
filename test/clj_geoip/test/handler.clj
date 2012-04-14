@@ -1,4 +1,4 @@
-(ns clj-geoip.handler
+(ns clj-geoip.test.handler
   (:use [clojure.test]
         [clj-geoip.handler]))
 
