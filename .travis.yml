@@ -1,3 +1,1 @@
 language: clojure
-before_script: ./scripts/UpdateGeoIpFiles.sh
-

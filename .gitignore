@@ -6,7 +6,6 @@
 /.lein-failures
 /checkouts
 /.lein-deps-sum
-*.dat
 *.dat.gz
 /target
 /.lein-plugins/checksum

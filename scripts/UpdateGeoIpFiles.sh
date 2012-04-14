@@ -1,8 +1,5 @@
 #!/bin/bash
 
-echo "Change to script dir"
-cd ./scripts
-
 # Download the newest archives if they have changed since the last
 # update.
 echo "Downloading files"
