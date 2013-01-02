@@ -1,6 +1,6 @@
 # clj-geoip
 
-[![Build Status](https://secure.travis-ci.org/Norrit/clj-geoip.png)](http://travis-ci.org/Norrit/)
+[![Build Status](https://secure.travis-ci.org/Norrit/clj-geoip.png)](http://travis-ci.org/Norrit/clj-geoip)
 
 `clj-geoip` is a thin [Clojure](http://www.clojure.com) layer on top
 of the [MaxMind GeoIP Java API](http://www.maxmind.com/). It allows
