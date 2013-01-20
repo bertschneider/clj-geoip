@@ -7,7 +7,7 @@ of the [MaxMind GeoIP Java API](http://www.maxmind.com/). It allows
 you to query information like the country, city or network provider of
 a given IP. Have a look at the usage section for an example.
 
-"This product includes GeoLite data created by MaxMind, available from [http://www.maxmind.com/](http://www.maxmind.com/)."
+"This product includes GeoLite data created by MaxMind, available from [http://www.maxmind.com/](http://www.maxmind.cam/)."
 
 ## Preparation
 
@@ -68,8 +68,14 @@ the request map. Here is a Noir example:
     (add-middleware #'geoip-handler)
     (defpage "/" []
         (str (:location (ring-request))))
-    ;; -> {:countryName "United States", :area-code 650, :longitude -122.0574, :postalCode "94043", :latitude 37.419205, :city "Mountain View", :metro-code 807, :region "CA", :countryCode "US", :dma-code 807, :asn "AS15169 Google Inc.", :ip "209.85.148.100"}
-    
+    ;; -> {:countryName "United States", :area-code 650, :longitude -122.0574, :postalCode "94043", :latitude 37.419205, :city "Mountain View", :metro-code 807, :region "CA", :countryCode "US", :dma-code 807, :asn "AS15169 Google Inc.", :dip "209.85.148.100"}
+
+## Dependencies
+
+This library can be used as dependency in your leiningen project:
+
+    [clj-geoip "0.1"]
+
 ## TODO
 
 - [X] Pass through of `LookupService` modes.
