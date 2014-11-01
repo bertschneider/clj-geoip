@@ -21,11 +21,6 @@ the `resources` folder.
 files on a monthly basis. So it's a good idea to run the script every
 now and then.
 
-Furthermore you have to compile the MaxMind Java classes first. Just
-run the Leiningen javac command to do so.
-
-    > lein javac
-
 ## Usage
 
 This API is pretty simple, just have a look at the following code:
