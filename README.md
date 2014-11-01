@@ -3,7 +3,7 @@
 [![Build Status](https://secure.travis-ci.org/Norrit/clj-geoip.png)](http://travis-ci.org/Norrit/clj-geoip)
 
 `clj-geoip` is a thin [Clojure](http://www.clojure.com) layer on top
-of the [MaxMind GeoIP Java API](http://www.maxmind.com/). It allows
+of the legacy [MaxMind GeoIP Java API](https://github.com/maxmind/geoip-api-java). It allows
 you to query information like the country, city or network provider of
 a given IP. Have a look at the usage section for an example.
 
@@ -13,7 +13,7 @@ a given IP. Have a look at the usage section for an example.
 
 To use `clj-geoip` you first need to download the newest version of
 the free GeoIP data files. To do so you can use the download script
-`UpdateGeoIpFiles.sh` provided in the `scripts` folder. 
+`UpdateGeoIpFiles.sh` provided in the `scripts` folder.
 It simply downloads the newest archives and extracts them into
 the `resources` folder.
 
@@ -58,7 +58,7 @@ possible to bind the locations in the `clj-geoip.core/*dbs*` symbol to a new val
 
 You can use the provided ring handler to add location information to
 the request map. Here is a Noir example:
-    
+
     (use 'clj-geoip.handler)
     (add-middleware #'geoip-handler)
     (defpage "/" []
@@ -75,10 +75,10 @@ This library can be used as dependency in your leiningen project:
 
 - [X] Pass through of `LookupService` modes.
 - [X] Ring handler to inject location information into the request map.
-- Is the `geoip-close` method really necessary? 
+- Is the `geoip-close` method really necessary?
 - Add IPv6 functions.
 - Add function to calculate the distance between two IPs.
-- Noir test application on Heroku. 
+- Noir test application on Heroku.
 
 ## License
 
