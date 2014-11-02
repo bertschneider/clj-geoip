@@ -11,12 +11,17 @@ lookup information about the given IP."
        :doc "Location of the GeoIP DB files."}
   *dbs*
   {:city "resources/GeoLiteCity.dat"
-   :asn  "resources/GeoIPASNum.dat"})
+   :asn  "resources/GeoIPASNum.dat"
+   :city-ipv6 "resources/GeoLiteCityv6.dat"
+   :asn-ipv6  "resources/GeoIPASNumv6.dat"})
 
 ;; Refs to hold the two GeoIP DB files.
 ;; They should be private so no one messes around with them.
 (def ^{:private true} geoip-city (ref nil))
 (def ^{:private true} geoip-asn (ref nil))
+(def ^{:private true} geoip-city-ipv6 (ref nil))
+(def ^{:private true} geoip-asn-ipv6 (ref nil))
+
 
 (defn- geoip-mode
   "Looks up the matching mode to the given keyword."
@@ -36,14 +41,23 @@ lookup information about the given IP."
 
 (defn geoip-init
   "Initializes the GeoIP service.
-The modes `:memory`, `:check` or `:index` are possible."
-  [& [mode]]
-  (dosync
-   (let [city (geoip-init-db (:city *dbs*) mode)
-         asn (geoip-init-db (:asn *dbs*) mode)]
-     (ref-set geoip-city city)
-     (ref-set geoip-asn asn)
-     true)))
+The modes `:memory`, `:check` or `:index` are possible.
+ip-version `:IPv4` (default), `:IPv4+6`, or just `IPv6`."
+  [ip-version & [mode]]
+   (if (:or (= ip-version :IPv4) (= ip-version :IPv4+6))
+      (dosync
+       (let [city (geoip-init-db (:city *dbs*) mode)
+             asn (geoip-init-db (:asn *dbs*) mode)]
+         (ref-set geoip-city city)
+         (ref-set geoip-asn asn)
+         true)))
+   (if (:or (= ip-version :IPv6) (= ip-version :IPv4+6))
+      (dosync
+       (let [city (geoip-init-db (:city-ipv6 *dbs*) mode)
+             asn (geoip-init-db (:asn-ipv6 *dbs*) mode)]
+         (ref-set geoip-city city)
+         (ref-set geoip-asn asn)
+         true))))
 
 (defn geoip-close
   "Shuts down the GeoIP service."
@@ -53,6 +67,10 @@ The modes `:memory`, `:check` or `:index` are possible."
    (ref-set geoip-asn nil)
    (.close @geoip-city)
    (ref-set geoip-city nil)
+   (.close @geoip-asn-ipv6)
+   (ref-set geoip-asn-ipv6 nil)
+   (.close @geoip-city-ipv6)
+   (ref-set geoip-city-ipv6 nil)
    true))
 
 
@@ -60,26 +78,36 @@ The modes `:memory`, `:check` or `:index` are possible."
 ;; ============
 
 (defn initialized?
-  "Checks whether the GeoIP service is initialized or not."
-  []
-  (and (not (nil? @geoip-city)) (not (nil? @geoip-asn))))
+  "Checks whether the GeoIP service is initialized or not.
+DB type ip-version `:IPv4` (default), `:IPv4+6`, or just `:IPv6`."
+  [ & [ip-version-in]]
+  (let [ip-version (if (not ip-version-in) :IPv4 ip-version-in)]
+   (if (:or (= ip-version :IPv4) (= ip-version :IPv4+6))
+    (and (not (nil? @geoip-city)) (not (nil? @geoip-asn))))
+   (if (:or (= ip-version :IPv6) (= ip-version :IPv4+6))
+    (and (not (nil? @geoip-city-ipv6)) (not (nil? @geoip-asn-ipv6))))))
 
 (defmacro with-init-check
-  "Wrapps the given statements with an init check."
+  "Wraps the given statements with an init check."
   [body]
   `(if (initialized?)
      ~body
-     (throw (IllegalStateException. "GeoIP not initialized."))))
+     (throw (IllegalStateException. "GeoIP db not initialized."))))
 
 
 ;; Lookup
 ;; =============
+(defn- get-location
+  [ip ip-version]
+  (cond
+   (= ip-version :IPv6) (.getLocationV6 @geoip-city-ipv6 ip)
+   :else (.getLocation @geoip-city ip)))
 
 (defn- lookup-location
   "Looks up IP location information."
-  [ip]
-  (with-init-check 
-    (if-let [location (.getLocation @geoip-city ip)]
+  [ip ip-version]
+  (with-init-check
+    (if-let [location (get-location ip ip-version)]
       {:ip ip
        :countryCode (.countryCode location)
        :countryName (.countryName location)
@@ -92,18 +120,26 @@ The modes `:memory`, `:check` or `:index` are possible."
        :area-code (.area_code location)
        :metro-code (.metro_code location)})))
 
+(defn- get-asn
+  [ip ip-version]
+  (cond
+   (= ip-version :IPv6) (.getOrgV6 @geoip-asn-ipv6 ip)
+   :else (.getOrg @geoip-asn ip)))
+
 (defn- lookup-asn
   "Looks up IP provider information."
-  [ip]
+  [ip ip-version]
   (with-init-check
-    (if-let [asn (.getOrg @geoip-asn ip)]
+   (if-let [asn (get-asn ip ip-version)]
       {:ip ip
        :asn asn})))
 
 (defn lookup
-  "Looks up all available IP information."
+  "Looks up all available IP information.
+Assumes IPv6 address if '::' in string, defaults to IPv4."
   [ip]
-  (if-let [geoinfo (merge (lookup-location ip)
-                          (lookup-asn ip))]
-    geoinfo
-    {:error "IP not localized"}))
+  (let [ip-version (if (re-find #"::" ip) :IPv6 :IPv4)]
+    (if-let [geoinfo (merge (lookup-location ip ip-version)
+                            (lookup-asn ip ip-version))]
+      geoinfo
+      {:error "IP not localized"})))
