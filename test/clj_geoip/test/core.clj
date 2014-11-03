@@ -18,7 +18,7 @@
 
 (deftest lookup-ipv6-with-geoip
   ;(is (thrown? IllegalStateException (lookup "IP")))
-  (is (true? (geoip-init :ip-version 6)))
+  (is (true? (geoip-init :IPv6)))
   (is (true? (initialized?)))
   (is (map? (lookup "google.com")))
   (let [location (lookup "2001:4860:4860::8888")]
