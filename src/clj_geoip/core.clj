@@ -22,6 +22,10 @@ lookup information about the given IP."
 (def ^{:private true} geoip-city-ipv6 (ref nil))
 (def ^{:private true} geoip-asn-ipv6 (ref nil))
 
+(keyword 'IPv4)
+(keyword 'IPv6)
+(keyword 'IPv4+6)
+
 
 (defn- geoip-mode
   "Looks up the matching mode to the given keyword."
@@ -43,35 +47,23 @@ lookup information about the given IP."
   "Initializes the GeoIP service.
 The modes `:memory`, `:check` or `:index` are possible.
 ip-version `:IPv4` (default), `:IPv4+6`, or just `IPv6`."
-  [ip-version & [mode]]
-   (if (:or (= ip-version :IPv4) (= ip-version :IPv4+6))
+  [ipv-in & [mode]]
+  (let [ip-version
+         (if (some #(= ipv-in %) [:IPv4 :IPv6 :IPv4+6]) ipv-in :IPv4)]
+    (if (:or (= ip-version :IPv4) (= ip-version :IPv4+6))
       (dosync
        (let [city (geoip-init-db (:city *dbs*) mode)
              asn (geoip-init-db (:asn *dbs*) mode)]
          (ref-set geoip-city city)
          (ref-set geoip-asn asn)
-         true)))
-   (if (:or (= ip-version :IPv6) (= ip-version :IPv4+6))
+         true) (prn "init IPv4")))
+    (if (:or (= ip-version :IPv6) (= ip-version :IPv4+6))
       (dosync
        (let [city (geoip-init-db (:city-ipv6 *dbs*) mode)
              asn (geoip-init-db (:asn-ipv6 *dbs*) mode)]
          (ref-set geoip-city city)
          (ref-set geoip-asn asn)
-         true))))
-
-(defn geoip-close
-  "Shuts down the GeoIP service."
-  []
-  (dosync
-   (.close @geoip-asn)
-   (ref-set geoip-asn nil)
-   (.close @geoip-city)
-   (ref-set geoip-city nil)
-   (.close @geoip-asn-ipv6)
-   (ref-set geoip-asn-ipv6 nil)
-   (.close @geoip-city-ipv6)
-   (ref-set geoip-city-ipv6 nil)
-   true))
+         true) (prn "init IPv6")))))
 
 
 ;; Helper
@@ -89,11 +81,27 @@ DB type ip-version `:IPv4` (default), `:IPv4+6`, or just `:IPv6`."
 
 (defmacro with-init-check
   "Wraps the given statements with an init check."
-  [body]
-  `(if (initialized?)
-     ~body
-     (throw (IllegalStateException. "GeoIP db not initialized."))))
+  [ip-version body]
+  `(if (initialized? ~ip-version)
+    ~body
+    (throw (IllegalStateException. "GeoIP db not initialized."))))
 
+(defn geoip-close
+  "Shuts down the GeoIP service."
+  []
+  (dosync
+     (when (initialized? :IPv4)
+       (.close @geoip-asn)
+       (ref-set geoip-asn nil)
+       (.close @geoip-city)
+       (ref-set geoip-city nil))
+
+     (when(initialized? :IPv6)
+       (.close @geoip-asn-ipv6)
+       (ref-set geoip-asn-ipv6 nil)
+       (.close @geoip-city-ipv6)
+       (ref-set geoip-city-ipv6 nil))
+   true))
 
 ;; Lookup
 ;; =============
@@ -106,7 +114,7 @@ DB type ip-version `:IPv4` (default), `:IPv4+6`, or just `:IPv6`."
 (defn- lookup-location
   "Looks up IP location information."
   [ip ip-version]
-  (with-init-check
+  (with-init-check ip-version
     (if-let [location (get-location ip ip-version)]
       {:ip ip
        :countryCode (.countryCode location)
@@ -129,7 +137,7 @@ DB type ip-version `:IPv4` (default), `:IPv4+6`, or just `:IPv6`."
 (defn- lookup-asn
   "Looks up IP provider information."
   [ip ip-version]
-  (with-init-check
+  (with-init-check ip-version
    (if-let [asn (get-asn ip ip-version)]
       {:ip ip
        :asn asn})))
