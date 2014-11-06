@@ -45,6 +45,20 @@ This API is pretty simple, just have a look at the following code:
      :dma-code 0,
      :ip "87.152.91.74"}
     nil
+    user=> (pprint (lookup "2a00:1450:8003::93"))
+    {:ip "2a00:1450:8003::93",
+     :area-code 0,
+     :dma-code 0,
+     :city nil,
+     :metro-code 0,
+     :longitude -8.0,
+     :countryName "Ireland",
+     :region nil,
+     :postalCode nil,
+     :asn "AS15169 Google Inc.",
+     :latitude 53.0,
+     :countryCode "IE"}
+    nil
     user> (geoip-close)
     true
 
