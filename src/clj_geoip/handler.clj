@@ -5,7 +5,7 @@
 (defn geoip-handler
   "GeoIP ring handler to add location information to the request map."
   [handler]
-  (geoip/geoip-init)
+  (geoip/geoip-init :IPv4+6)
   (fn [request]
     (let [ip (:remote-addr request)
           location (geoip/lookup ip)
