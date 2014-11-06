@@ -27,7 +27,7 @@ This API is pretty simple, just have a look at the following code:
 
     user> (use 'clj-geoip.core)
     nil
-    user> (geoip-init)
+    user> (geoip-init :IPv4+6)
     true
     user> (use 'clojure.pprint)
     nil
@@ -49,7 +49,7 @@ This API is pretty simple, just have a look at the following code:
     true
 
 Use `geoip-init` and `geoip-close` to start and stop the service and `lookup` to
-lookup information about the given IP.
+lookup information about the given IP. Choose whether to load `:IPv4` (the default), `:IPv6` or `:IPv4+6` when you call `geoip-init`. Note that the IPv6 support in this legacy database format is experimental.
 
 The data files are expected to be in the `resources` folder but it's
 possible to bind the locations in the `clj-geoip.core/*dbs*` symbol to a new value.
@@ -76,12 +76,12 @@ This library can be used as dependency in your leiningen project:
 - [X] Pass through of `LookupService` modes.
 - [X] Ring handler to inject location information into the request map.
 - Is the `geoip-close` method really necessary?
-- Add IPv6 functions.
+- [X] Add IPv6 functions.
 - Add function to calculate the distance between two IPs.
 - Noir test application on Heroku.
 
 ## License
 
-Copyright (C) 2012
+Copyright (C) 2012--2014
 
 Distributed under the Eclipse Public License, the same as Clojure.
