@@ -7,8 +7,5 @@ Please have a look at the GeoIP homepage at http://www.maxmind.com/app/ip-locati
             :distribution :repo
             :comments "same as Clojure"}
   :min-lein-version "2.1.0"
-  :aot :all
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [com.maxmind.geoip/geoip-api "1.2.14"]]
-  :plugins [[lein-swank "1.4.5"]
-            [lein-marginalia "0.8.0"]])
+                 [com.maxmind.geoip/geoip-api "1.2.14"]])
