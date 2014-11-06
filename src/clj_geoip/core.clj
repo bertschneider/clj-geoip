@@ -162,9 +162,10 @@ IP version `:IPv4` (default), `:IPv4+6`, or just `:IPv6`."
 (defn lookup
   "Looks up all available IP information.
 Assumes IPv6 address if '::' in string, defaults to IPv4."
-  [ip]
-  (let [ip-version (if (re-find #"::" ip) :IPv6 :IPv4)]
-    (if-let [geoinfo (merge (lookup-location ip ip-version)
-                            (lookup-asn ip ip-version))]
-      geoinfo
-      {:error "IP not localized"})))
+  ([ip]
+     (lookup ip (if (re-find #"::" ip) :IPv6 :IPv4)))
+  ([ip ip-version]
+     (if-let [geoinfo (merge (lookup-location ip ip-version)
+                             (lookup-asn ip ip-version))]
+       geoinfo
+       {:error "IP not localized"})))

@@ -8,6 +8,6 @@
   (geoip/geoip-init :IPv4+6)
   (fn [request]
     (let [ip (:remote-addr request)
-          location (geoip/lookup ip)
+          location (geoip/lookup ip :IPv4+6)
           req (assoc request :location location)]
       (handler req))))

@@ -18,13 +18,13 @@
 
 (deftest lookup-ipv6-with-geoip
   (is (true? (geoip-init :IPv6)))
-  (is (true? (initialized?)))
-  (is (map? (lookup "google.com")))
+  (is (true? (initialized? :IPv6)))
+  (is (map? (lookup "google.com" :IPv6)))
   (let [location (lookup "2001:4860:4860::8888")]
     (is (= "2001:4860:4860::8888" (:ip location)))
     (is (= "US" (:countryCode location)))
     (is (= "AS15169 Google Inc." (:asn location))))
   (is (true? (geoip-close)))
-  (is (false? (initialized?)))
+  (is (false? (initialized? :IPv6)))
   (is (thrown? IllegalStateException (lookup "IP")))
-  (is (true? (geoip-init :IPv4 :memory))))
+  (is (true? (geoip-init :IPv6 :memory))))
