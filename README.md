@@ -3,7 +3,7 @@
 [![Build Status](https://secure.travis-ci.org/Norrit/clj-geoip.png)](http://travis-ci.org/Norrit/clj-geoip)
 
 `clj-geoip` is a thin [Clojure](http://www.clojure.com) layer on top
-of the [MaxMind GeoIP Java API](http://www.maxmind.com/). It allows
+of the legacy [MaxMind GeoIP Java API](https://github.com/maxmind/geoip-api-java). It allows
 you to query information like the country, city or network provider of
 a given IP. Have a look at the usage section for an example.
 
@@ -13,7 +13,7 @@ a given IP. Have a look at the usage section for an example.
 
 To use `clj-geoip` you first need to download the newest version of
 the free GeoIP data files. To do so you can use the download script
-`UpdateGeoIpFiles.sh` provided in the `scripts` folder. 
+`UpdateGeoIpFiles.sh` provided in the `scripts` folder.
 It simply downloads the newest archives and extracts them into
 the `resources` folder.
 
@@ -27,7 +27,7 @@ This API is pretty simple, just have a look at the following code:
 
     user> (use 'clj-geoip.core)
     nil
-    user> (geoip-init)
+    user> (geoip-init :IPv4+6)
     true
     user> (use 'clojure.pprint)
     nil
@@ -45,11 +45,25 @@ This API is pretty simple, just have a look at the following code:
      :dma-code 0,
      :ip "87.152.91.74"}
     nil
+    user=> (pprint (lookup "2a00:1450:8003::93"))
+    {:ip "2a00:1450:8003::93",
+     :area-code 0,
+     :dma-code 0,
+     :city nil,
+     :metro-code 0,
+     :longitude -8.0,
+     :countryName "Ireland",
+     :region nil,
+     :postalCode nil,
+     :asn "AS15169 Google Inc.",
+     :latitude 53.0,
+     :countryCode "IE"}
+    nil
     user> (geoip-close)
     true
 
 Use `geoip-init` and `geoip-close` to start and stop the service and `lookup` to
-lookup information about the given IP.
+lookup information about the given IP. Choose whether to load `:IPv4` (the default), `:IPv6` or `:IPv4+6` when you call `geoip-init`. Note that the IPv6 support in this legacy database format is experimental.
 
 The data files are expected to be in the `resources` folder but it's
 possible to bind the locations in the `clj-geoip.core/*dbs*` symbol to a new value.
@@ -58,7 +72,7 @@ possible to bind the locations in the `clj-geoip.core/*dbs*` symbol to a new val
 
 You can use the provided ring handler to add location information to
 the request map. Here is a Noir example:
-    
+
     (use 'clj-geoip.handler)
     (add-middleware #'geoip-handler)
     (defpage "/" []
@@ -75,13 +89,13 @@ This library can be used as dependency in your leiningen project:
 
 - [X] Pass through of `LookupService` modes.
 - [X] Ring handler to inject location information into the request map.
-- Is the `geoip-close` method really necessary? 
-- Add IPv6 functions.
+- Is the `geoip-close` method really necessary?
+- [X] Add IPv6 functions.
 - Add function to calculate the distance between two IPs.
-- Noir test application on Heroku. 
+- Noir test application on Heroku.
 
 ## License
 
-Copyright (C) 2012
+Copyright (C) 2012--2014
 
 Distributed under the Eclipse Public License, the same as Clojure.
