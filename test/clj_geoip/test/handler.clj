@@ -1,9 +1,9 @@
 (ns clj-geoip.test.handler
-  (:use [clojure.test]
-        [clj-geoip.handler]))
+  (:require [midje.sweet :refer :all]
+            [clj-geoip.handler :refer :all]))
 
-(deftest handler_should_add_location_to_request
-  (let [request {:remote-addr "209.85.148.100"}
-        handler (geoip-handler #(:location %))]
-    (is (= "United States" (:countryName (handler request))))))
+(facts "about the ring handler"
 
+       (fact "it adds location information to the :location key of the request map"
+             (let [handler (geoip-handler #(:location %))]
+               (handler {:remote-addr "209.85.148.100"})) => (contains {:countryName "United States"})))
