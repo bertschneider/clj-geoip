@@ -8,4 +8,7 @@ Please have a look at the GeoIP homepage at http://www.maxmind.com/app/ip-locati
             :comments "same as Clojure"}
   :min-lein-version "2.1.0"
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [com.maxmind.geoip/geoip-api "1.2.14"]])
+                 [com.maxmind.geoip/geoip-api "1.2.14"]]
+  :profiles {:dev {:dependencies [[midje "1.6.3"]]
+                   :plugins [[lein-midje "3.1.3"]] ;TravisCI needs this
+                   }})
