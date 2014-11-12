@@ -1,4 +1,4 @@
-(defproject clj-geoip "0.1"
+(defproject clj-geoip "0.2"
   :description "Thin Clojure layer on top of the Java GeoIP API.
 Please have a look at the GeoIP homepage at http://www.maxmind.com/app/ip-location."
   :url "https://github.com/bertschneider/clj-geoip"

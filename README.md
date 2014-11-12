@@ -7,6 +7,8 @@ of the legacy [MaxMind GeoIP Java API](https://github.com/maxmind/geoip-api-java
 you to query information like the country, city or network provider of
 a given IP. Have a look at the usage section for an example.
 
+The new version can be found at [GeoIP2](https://github.com/maxmind/GeoIP2-java).
+
 "This product includes GeoLite data created by MaxMind, available from [http://www.maxmind.com/](http://www.maxmind.cam/)."
 
 ## Preparation
@@ -25,48 +27,44 @@ now and then.
 
 This API is pretty simple, just have a look at the following code:
 
-    user> (use 'clj-geoip.core)
-    nil
-    user> (geoip-init :IPv4+6)
-    true
     user> (use 'clojure.pprint)
     nil
-    user> (pprint (lookup "87.152.91.74"))
-    {:countryName "Germany",
-     :area-code 0,
-     :asn "AS3320 Deutsche Telekom AG",
-     :longitude 7.399994,
-     :postalCode nil,
-     :latitude 50.983307,
-     :city "Engelskirchen",
-     :metro-code 0,
-     :region "07",
-     :countryCode "DE",
-     :dma-code 0,
-     :ip "87.152.91.74"}
+    user> (require ['clj-geoip.core :refer :all])
     nil
-    user=> (pprint (lookup "2a00:1450:8003::93"))
-    {:ip "2a00:1450:8003::93",
+    user> (def mls (multi-lookup-service)
+    user> (pprint (lookup mls "87.152.91.74"))
+    {:timezone "Europe/Berlin",
+     :ip "87.152.91.74",
+     :area-code 0,
+     :dma-code 0,
+     :city "Lindlar",
+     :country-code "DE",
+     :metro-code 0,
+     :longitude 7.366501,
+     :postal-code "51789",
+     :region "Nordrhein-Westfalen",
+     :org "AS3320 Deutsche Telekom AG",
+     :latitude 51.033203,
+     :country-name "Germany"}
+    user=> (pprint (lookup mls "2a00:1450:8003::93"))
+    {:timezone "Europe/Dublin",
+     :ip "2a00:1450:8003::93",
      :area-code 0,
      :dma-code 0,
      :city nil,
+     :country-code "IE",
      :metro-code 0,
      :longitude -8.0,
-     :countryName "Ireland",
+     :postal-code nil,
      :region nil,
-     :postalCode nil,
-     :asn "AS15169 Google Inc.",
+     :org "AS15169 Google Inc.",
      :latitude 53.0,
-     :countryCode "IE"}
+     :country-name "Ireland"}
+    user> (close mls)
     nil
-    user> (geoip-close)
-    true
 
-Use `geoip-init` and `geoip-close` to start and stop the service and `lookup` to
-lookup information about the given IP. Choose whether to load `:IPv4` (the default), `:IPv6` or `:IPv4+6` when you call `geoip-init`. Note that the IPv6 support in this legacy database format is experimental.
-
-The data files are expected to be in the `resources` folder but it's
-possible to bind the locations in the `clj-geoip.core/*dbs*` symbol to a new value.
+Use `lookup-service` to create a lookup service from a specific db file or `multi-lookup-service` to create one from both db files.
+Afterwords the service can be used to look up IPv4 and IPv6 addresses.
 
 ## Ring Handler
 
@@ -77,22 +75,20 @@ the request map. Here is a Noir example:
     (add-middleware #'geoip-handler)
     (defpage "/" []
         (str (:location (ring-request))))
-    ;; -> {:countryName "United States", :area-code 650, :longitude -122.0574, :postalCode "94043", :latitude 37.419205, :city "Mountain View", :metro-code 807, :region "CA", :countryCode "US", :dma-code 807, :asn "AS15169 Google Inc.", :dip "209.85.148.100"}
+    ;; -> {:country-name "United States", :area-code 650, :longitude -122.0574 ... }
 
 ## Dependencies
 
 This library can be used as dependency in your leiningen project:
 
-    [clj-geoip "0.1"]
+    [clj-geoip "0.2"]
 
-## TODO
+## Changelog
 
-- [X] Pass through of `LookupService` modes.
-- [X] Ring handler to inject location information into the request map.
-- Is the `geoip-close` method really necessary?
-- [X] Add IPv6 functions.
-- Add function to calculate the distance between two IPs.
-- Noir test application on Heroku.
+### Version 0.2
+- Removed global lookup service in favor of the Lookupable protocol so that `geoip-init` is not needed anymore.
+- Added `:timezone` and `:region` to the `lookup` map. 
+- Renamed some keywords in the returned map from the `lookup` function to more clojure idiomatic names.
 
 ## License
 
