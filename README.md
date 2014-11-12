@@ -64,7 +64,7 @@ This API is pretty simple, just have a look at the following code:
     nil
 
 Use `lookup-service` to create a lookup service from a specific db file or `multi-lookup-service` to create one from both db files.
-Afterwords the service can be used to look up IPv4 and IPv6 addresses.
+Afterwards the service can be used to look up IPv4 and IPv6 addresses.
 
 ## Ring Handler
 
