@@ -86,7 +86,7 @@ This library can be used as dependency in your leiningen project:
 ## Changelog
 
 ### Version 0.2
-- Removed global lookup service in favor of the Lookupable protocol so that `geoip-init` is not needed anymore.
+- Removed global lookup service in favor of the `Lookupable` protocol so that `geoip-init` is not needed anymore.
 - Added `:timezone` and `:region` to the `lookup` map. 
 - Renamed some keywords in the returned map from the `lookup` function to more clojure idiomatic names.
 
