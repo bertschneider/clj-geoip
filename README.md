@@ -67,7 +67,7 @@ Use `lookup-service` to create a lookup service from a specific db file or `mult
 Afterwards the service can be used to look up IPv4 and IPv6 addresses.
 
 During the creation of a `lookup-service` or `multi-lookup-service` one or more of the following cache options can be specified and will be passed through to the MaxMind `LookupService`.
-`:standard`, `:memory-cache`, `check-cache`, `index-cache` 
+`:standard`, `:memory-cache`, `:check-cache`, `:index-cache` 
 
 ## Ring Handler
 
