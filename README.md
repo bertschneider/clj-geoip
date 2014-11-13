@@ -66,6 +66,9 @@ This API is pretty simple, just have a look at the following code:
 Use `lookup-service` to create a lookup service from a specific db file or `multi-lookup-service` to create one from both db files.
 Afterwards the service can be used to look up IPv4 and IPv6 addresses.
 
+During the creation of a `lookup-service` or `multi-lookup-service` one or more of the following cache options can be specified and will be passed through to the MaxMind `LookupService`.
+`:standard`, `:memory-cache`, `check-cache`, `index-cache` 
+
 ## Ring Handler
 
 You can use the provided ring handler to add location information to

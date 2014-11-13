@@ -1,6 +1,18 @@
 (ns clj-geoip.test.core
   (:require [midje.sweet :refer :all]
-            [clj-geoip.core :refer :all]))
+            [clj-geoip.core :refer :all])
+  (import com.maxmind.geoip.LookupService))
+
+(defn get-field
+  "Access to private or protected field.  field-name is a symbol or
+  keyword."
+  [klass field-name obj]
+  (-> klass (.getDeclaredField (name field-name))
+      (doto (.setAccessible true))
+      (.get obj)))
+
+(defn dboptions [obj]
+  (get-field LookupService "dboptions" obj))
 
 (let [ip "173.194.112.247"
       ipv6 "2001:4860:4860::8888"]
@@ -12,6 +24,12 @@
 
          (fact "it implements the Lookupable protocol"
                (lookup-service "resources/GeoLiteCityv6.dat") => #(extends? Lookupable (class %)))
+
+         (fact "it can be initialized with a cache option"
+               (dboptions (lookup-service "resources/GeoLiteCityv6.dat" :memory-cache)) => 1)
+
+         (fact "it can be initialized with multiple cache options"
+               (dboptions (lookup-service "resources/GeoLiteCityv6.dat" :memory-cache :check-cache)) => 3)
 
          (fact "it can be closed"
                (close (lookup-service "resources/GeoLiteCityv6.dat")) => nil)
@@ -58,6 +76,12 @@
 
          (fact "it implements the Lookupable protocol"
                (multi-lookup-service) => #(extends? Lookupable (class %)))
+
+         (fact "it can be initialized with a cache option"
+               (multi-lookup-service [:memory-cache]) => truthy)
+
+         (fact "it can be initialized with multiple cache options"
+               (multi-lookup-service [:memory-cache :check-cache]) => truthy)
 
          (fact "it can be closed"
                (close (multi-lookup-service)) => nil)
