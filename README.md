@@ -2,8 +2,6 @@
 
 [![Build Status](https://secure.travis-ci.org/bertschneider/clj-geoip.png)](http://travis-ci.org/bertschneider/clj-geoip)
 
-[![Clojars Project](http://clojars.org/de.bertschneider/clj-geoip/latest-version.svg)](http://clojars.org/de.bertschneider/clj-geoip)
-
 `clj-geoip` is a thin [Clojure](http://www.clojure.com) layer on top
 of the legacy [MaxMind GeoIP Java API](https://github.com/maxmind/geoip-api-java). It allows
 you to query information like the country, city or network provider of
@@ -86,7 +84,7 @@ the request map. Here is a Noir example:
 
 This library can be used as dependency in your leiningen project:
 
-    [de.bertschneider/clj-geoip "0.2"]
+[![Clojars Project](http://clojars.org/de.bertschneider/clj-geoip/latest-version.svg)](http://clojars.org/de.bertschneider/clj-geoip)
 
 __Please note, that the jar does not contain any database files.__
 
