@@ -1,6 +1,6 @@
-(ns clj-geoip.handler
+(ns de.bertschneider.clj-geoip.handler
   "GeoIP ring handler."
-  (:require [clj-geoip.core :as geoip]))
+  (:require [de.bertschneider.clj-geoip.core :as geoip]))
 
 (defn geoip-handler
   "GeoIP ring handler to add location information to the request map."

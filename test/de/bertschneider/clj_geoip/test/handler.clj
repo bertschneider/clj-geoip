@@ -1,6 +1,6 @@
-(ns clj-geoip.test.handler
+(ns de.bertschneider.clj-geoip.test.handler
   (:require [midje.sweet :refer :all]
-            [clj-geoip.handler :refer :all]))
+            [de.bertschneider.clj-geoip.handler :refer :all]))
 
 (facts "about the ring handler"
 

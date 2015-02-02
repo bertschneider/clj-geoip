@@ -2,6 +2,8 @@
 
 [![Build Status](https://secure.travis-ci.org/bertschneider/clj-geoip.png)](http://travis-ci.org/bertschneider/clj-geoip)
 
+[![Clojars Project](http://clojars.org/de.bertschneider/clj-geoip/latest-version.svg)](http://clojars.org/de.bertschneider/clj-geoip)
+
 `clj-geoip` is a thin [Clojure](http://www.clojure.com) layer on top
 of the legacy [MaxMind GeoIP Java API](https://github.com/maxmind/geoip-api-java). It allows
 you to query information like the country, city or network provider of
@@ -29,7 +31,7 @@ This API is pretty simple, just have a look at the following code:
 
     user> (use 'clojure.pprint)
     nil
-    user> (require ['clj-geoip.core :refer :all])
+    user> (require ['de.bertschneider.clj-geoip.core :refer :all])
     nil
     user> (def mls (multi-lookup-service)
     user> (pprint (lookup mls "87.152.91.74"))
@@ -74,7 +76,7 @@ During the creation of a `lookup-service` or `multi-lookup-service` one or more 
 You can use the provided ring handler to add location information to
 the request map. Here is a Noir example:
 
-    (use 'clj-geoip.handler)
+    (use 'de.bertschneider.clj-geoip.handler)
     (add-middleware #'geoip-handler)
     (defpage "/" []
         (str (:location (ring-request))))
@@ -84,11 +86,14 @@ the request map. Here is a Noir example:
 
 This library can be used as dependency in your leiningen project:
 
-    [clj-geoip "0.2"]
+    [de.bertschneider/clj-geoip "0.2"]
+
+__Please note, that the jar does not contain any database files.__
 
 ## Changelog
 
 ### Version 0.2
+- Moved code to namespace `de.bertschneider.clj-geoip`.
 - Removed global lookup service in favor of the `Lookupable` protocol so that `geoip-init` is not needed anymore.
 - Added `:timezone` and `:region` to the `lookup` map. 
 - Renamed some keywords in the returned map from the `lookup` function to more clojure idiomatic names.

@@ -1,4 +1,4 @@
-(ns clj-geoip.core
+(ns de.bertschneider.clj-geoip.core
   "Thin Clojure layer on top of the GeoIP Java API."
   (import [com.maxmind.geoip LookupService regionName timeZone]))
 

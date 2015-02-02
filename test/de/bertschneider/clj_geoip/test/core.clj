@@ -1,6 +1,6 @@
-(ns clj-geoip.test.core
+(ns de.bertschneider.clj-geoip.test.core
   (:require [midje.sweet :refer :all]
-            [clj-geoip.core :refer :all])
+            [de.bertschneider.clj-geoip.core :refer :all])
   (import com.maxmind.geoip.LookupService))
 
 (defn get-field
