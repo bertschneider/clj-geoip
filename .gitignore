@@ -12,3 +12,5 @@
 /.lein-plugins/checksum
 *#
 /.nrepl-port
+/.lein-repl-history
+

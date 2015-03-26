@@ -31,7 +31,8 @@ This API is pretty simple, just have a look at the following code:
     nil
     user> (require ['de.bertschneider.clj-geoip.core :refer :all])
     nil
-    user> (def mls (multi-lookup-service)
+    user> (def mls (multi-lookup-service))
+    #'user/mls
     user> (pprint (lookup mls "87.152.91.74"))
     {:timezone "Europe/Berlin",
      :ip "87.152.91.74",
